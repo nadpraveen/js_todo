@@ -1,8 +1,13 @@
 const addForm = document.querySelector('.add');
+const formSubmit = document.querySelector('.form-submit');
 const ul = document.querySelector('.todos');
 const search = document.querySelector('.search input');
-const todo = localStorage.getItem('todo');
-const todoArray = JSON.parse(todo);
+// const todo = localStorage.getItem('todo');
+const todoDef = ['Welcome'];
+if(!localStorage.getItem('todo')){
+   localStorage.setItem('todo',JSON.stringify(['Welcome']));
+}
+const todoArray = JSON.parse(localStorage.getItem('todo'));
 
 const generateTodo = () =>{
   ul.innerHTML = '';
@@ -17,16 +22,17 @@ const generateTodo = () =>{
 
 //Adding TODO
 
-addForm.addEventListener('submit',(e)=>{
+formSubmit.addEventListener('click',(e)=>{
   e.preventDefault();
   var todo = addForm.add.value.trim();
+  console.log(todo);
   if(todo.length){
     // generateTodo(todo);
     todoArray.push(todo);
     generateTodo();
     addForm.reset();
     localStorage.setItem('todo',JSON.stringify(todoArray));
-    console.log(todoArray);
+    //console.log(todoArray);
   };
 });
 
