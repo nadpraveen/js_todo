@@ -1,15 +1,18 @@
 const addForm = document.querySelector('.add');
-
 const ul = document.querySelector('.todos');
-
 const search = document.querySelector('.search input');
+const todo = localStorage.getItem('todo');
+const todoArray = JSON.parse(todo);
 
-const generateTodo = todo =>{
-  var html = `<li class="list-group-item d-flex justify-content-between align-items-center">
-    <span>${todo}</span>
-    <i class="far fa-trash-alt delete"></i>
-  </li>`;
-  ul.innerHTML += html;
+const generateTodo = () =>{
+  ul.innerHTML = '';
+  todoArray.forEach(todo => {
+    var html = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                  <span>${todo}</span>
+                  <i class="far fa-trash-alt delete"></i>
+                </li>`;
+    ul.innerHTML += html;
+  })
 };
 
 //Adding TODO
@@ -18,16 +21,27 @@ addForm.addEventListener('submit',(e)=>{
   e.preventDefault();
   var todo = addForm.add.value.trim();
   if(todo.length){
-    generateTodo(todo);
+    // generateTodo(todo);
+    todoArray.push(todo);
+    generateTodo();
     addForm.reset();
-  }
+    localStorage.setItem('todo',JSON.stringify(todoArray));
+    console.log(todoArray);
+  };
 });
 
 //Delete TODO
 
 ul.addEventListener('click', e=>{
   if(e.target.classList.contains('delete')){
-    e.target.parentElement.remove();
+    // e.target.parentElement.remove();
+    const itemName = e.target.parentElement.textContent.trim();
+    const itemIndex = todoArray.indexOf(itemName);
+    // console.log(itemName);
+    // console.log(itemIndex);
+    todoArray.splice(itemIndex,1);
+    localStorage.setItem('todo',JSON.stringify(todoArray));
+    generateTodo();
   };
 });
 
@@ -40,10 +54,14 @@ const filterTodos = (term)=>{
 
   Array.from(ul.children)
   .filter((todo)=> todo.textContent.toLowerCase().includes(term))
-  .forEach((todo)=>todo.classList.toLowerCase().remove('filtered'))
+  .forEach((todo)=>todo.classList.remove('filtered'))
 };
 
 search.addEventListener('keyup',()=>{
   const term = search.value.trim().toLocaleLowerCase();
   filterTodos(term);
 })
+
+
+//Intiating TODO
+generateTodo();
